@@ -1,10 +1,7 @@
 name: Semgrep SAST Scan
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:  # 🔹 Allows manual trigger from Actions tab
 
 jobs:
   semgrep:
