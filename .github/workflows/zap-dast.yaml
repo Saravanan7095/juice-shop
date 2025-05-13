@@ -8,11 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print ZAP JSON DAST report using Docker
+      - name: Create temp scan directory
+        run: mkdir zap-data
+
+      - name: Run ZAP DAST and print JSON
         run: |
           echo "===== OWASP ZAP DAST REPORT (START) ====="
-          docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
-            -t https://juice-shop-wo4s.onrender.com \
-            -a -j -r zap_report.html > zap_output.json || true
-          cat zap_output.json
+          docker run --rm \
+            -v ${{ github.workspace }}/zap-data:/zap/wrk \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py -t https://juice-shop-wo4s.onrender.com \
+            -a -j -J /zap/wrk/zap_report.json || true
+
+          cat zap-data/zap_report.json
           echo "===== OWASP ZAP DAST REPORT (END) ====="
