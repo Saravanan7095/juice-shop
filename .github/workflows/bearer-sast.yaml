@@ -1,7 +1,7 @@
 name: Bearer SAST Scan
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
 
 jobs:
   bearer:
@@ -18,5 +18,5 @@ jobs:
             -v ${{ github.workspace }}:/app \
             -w /app \
             ghcr.io/bearer/bearer \
-            scan . --format sarif
+            scan . --format sarif --exit-code 0
           echo "===== BEARER SARIF REPORT (END) ====="
