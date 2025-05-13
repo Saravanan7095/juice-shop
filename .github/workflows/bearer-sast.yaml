@@ -1,25 +1,22 @@
 name: Bearer SAST Scan
 
 on:
-  workflow_dispatch:  # ✅ Allows manual trigger from GitHub UI
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   bearer:
-    name: Run Bearer via Docker
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run Bearer and print SARIF report
+      - name: Run Bearer via Docker and print SARIF
         run: |
+          echo "===== BEARER SARIF REPORT (START) ====="
           docker run --rm \
             -v ${{ github.workspace }}:/app \
             -w /app \
             ghcr.io/bearer/bearer \
-            scan . --format sarif --output bearer_report.sarif
-
-          echo "===== BEARER SARIF REPORT (START) ====="
-          cat bearer_report.sarif
+            scan . --format sarif
           echo "===== BEARER SARIF REPORT (END) ====="
