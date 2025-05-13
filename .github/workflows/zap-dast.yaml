@@ -8,10 +8,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create temp scan directory
-        run: mkdir zap-data
+      - name: Create zap-data folder and placeholder file
+        run: |
+          mkdir -p zap-data
+          touch zap-data/zap_report.json
+          chmod 666 zap-data/zap_report.json  # Ensure container can write
 
-      - name: Run ZAP DAST and print JSON
+      - name: Run ZAP and print JSON output
         run: |
           echo "===== OWASP ZAP DAST REPORT (START) ====="
           docker run --rm \
