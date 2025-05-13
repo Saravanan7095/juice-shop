@@ -8,20 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create zap-data folder and placeholder file
-        run: |
-          mkdir -p zap-data
-          touch zap-data/zap_report.json
-          chmod 666 zap-data/zap_report.json  # Ensure container can write
-
-      - name: Run ZAP and print JSON output
+      - name: Run ZAP and print report (no volume mount)
         run: |
           echo "===== OWASP ZAP DAST REPORT (START) ====="
-          docker run --rm \
-            -v ${{ github.workspace }}/zap-data:/zap/wrk \
-            ghcr.io/zaproxy/zaproxy:stable \
+          docker run --rm ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t https://juice-shop-wo4s.onrender.com \
-            -a -j -J /zap/wrk/zap_report.json || true
-
-          cat zap-data/zap_report.json
+            -a -j -J /tmp/zap_report.json || true
+          docker run --rm ghcr.io/zaproxy/zaproxy:stable cat /tmp/zap_report.json || echo "Report not generated"
           echo "===== OWASP ZAP DAST REPORT (END) ====="
