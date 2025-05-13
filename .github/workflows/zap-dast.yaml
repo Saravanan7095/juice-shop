@@ -8,11 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run ZAP and print report (no volume mount)
+      - name: Run ZAP DAST inside container and extract report
         run: |
           echo "===== OWASP ZAP DAST REPORT (START) ====="
-          docker run --rm ghcr.io/zaproxy/zaproxy:stable \
+
+          docker run --name zap_scan ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t https://juice-shop-wo4s.onrender.com \
-            -a -j -J /tmp/zap_report.json || true
-          docker run --rm ghcr.io/zaproxy/zaproxy:stable cat /tmp/zap_report.json || echo "Report not generated"
+            -a -j -J /zap/wrk/zap_report.json || true
+
+          docker cp zap_scan:/zap/wrk/zap_report.json ./zap_report.json || echo "No report generated"
+          docker rm zap_scan > /dev/null
+
+          cat zap_report.json || echo "Report file missing"
+
           echo "===== OWASP ZAP DAST REPORT (END) ====="
