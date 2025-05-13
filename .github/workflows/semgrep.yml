@@ -1,12 +1,12 @@
 name: Semgrep SAST Scan
 
 on:
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:  # ✅ Manual trigger from UI
 
 jobs:
   semgrep:
     name: Run Semgrep
-    runs-on: ubuntu-22.04  # ✅ Use stable runner image
+    runs-on: ubuntu-22.04  # Or ubuntu-latest
 
     steps:
       - name: Checkout repo
@@ -25,7 +25,7 @@ jobs:
           semgrep --config=auto --json --output=semgrep_report.json || true
 
       - name: Upload Semgrep Report
-        uses: actions/upload-artifact@v3  # ✅ Now resolves correctly
+        uses: actions/upload-artifact@v2  # ✅ Fully compatible & stable
         with:
           name: semgrep-report
           path: semgrep_report.json
