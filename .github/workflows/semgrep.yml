@@ -1,12 +1,12 @@
 name: Semgrep SAST Scan
 
 on:
-  workflow_dispatch:  # ✅ Manual trigger from UI
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   semgrep:
     name: Run Semgrep
-    runs-on: ubuntu-22.04  # Or ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
@@ -20,12 +20,9 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
-      - name: Run Semgrep with OWASP Top 10 rules
+      - name: Run Semgrep and print output
         run: |
           semgrep --config=auto --json --output=semgrep_report.json || true
-
-      - name: Upload Semgrep Report
-        uses: actions/upload-artifact@v2  # ✅ Fully compatible & stable
-        with:
-          name: semgrep-report
-          path: semgrep_report.json
+          echo "===== SEMGREP REPORT (START) ====="
+          cat semgrep_report.json
+          echo "===== SEMGREP REPORT (END) ====="
