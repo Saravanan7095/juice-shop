@@ -1,7 +1,7 @@
 name: Bearer SAST Scan
 
 on:
-  workflow_dispatch:  # ✅ Manual trigger
+  workflow_dispatch:
 
 jobs:
   bearer:
@@ -11,13 +11,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install and run Bearer
+      - name: Install Bearer CLI
         run: |
-          curl -sSfL https://raw.githubusercontent.com/bearer/bearer/main/install.sh | sh
-          ./bearer scan --format sarif --output bearer_report.sarif .
+          curl -LO https://github.com/Bearer/bearer/releases/latest/download/bearer-linux-amd64
+          chmod +x bearer-linux-amd64
+          mv bearer-linux-amd64 bearer
 
-      - name: Print Bearer SARIF output
+      - name: Run Bearer and print SARIF report
         run: |
+          ./bearer scan --format sarif --output bearer_report.sarif .
           echo "===== BEARER SARIF REPORT (START) ====="
           cat bearer_report.sarif
           echo "===== BEARER SARIF REPORT (END) ====="
