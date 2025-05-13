@@ -11,14 +11,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download Bearer CLI (fixed)
+      - name: Download Bearer CLI (v1.37.2)
         run: |
-          BEARER_VERSION=$(curl -s https://api.github.com/repos/Bearer/bearer/releases/latest | jq -r .tag_name)
-          curl -L -o bearer https://github.com/Bearer/bearer/releases/download/${BEARER_VERSION}/bearer-linux-amd64
+          curl -L -o bearer https://github.com/Bearer/bearer/releases/download/v1.37.2/bearer-linux-amd64
           chmod +x bearer
 
-      - name: Run Bearer and print SARIF report
+      - name: Run Bearer and print SARIF
         run: |
           ./bearer scan --format sarif --output bearer_report.sarif .
           echo "===== BEARER SARIF REPORT (START) ====="
-          cat bearer_report.s_
+          cat bearer_report.sarif
+          echo "===== BEARER SARIF REPORT (END) ====="
