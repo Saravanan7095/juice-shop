@@ -1,21 +1,23 @@
-name: Bearer SAST
+name: Bearer SAST Scan
 
 on:
-  workflow_dispatch:  # allows manual run
+  workflow_dispatch:  # ✅ Manual trigger
 
 jobs:
   bearer:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Run Bearer and generate SARIF report
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install and run Bearer
         run: |
           curl -sSfL https://raw.githubusercontent.com/bearer/bearer/main/install.sh | sh
           ./bearer scan --format sarif --output bearer_report.sarif .
 
-      - name: Upload SARIF report
-        uses: actions/upload-artifact@v3
-        with:
-          name: bearer-sarif-report
-          path: bearer_report.sarif
+      - name: Print Bearer SARIF output
+        run: |
+          echo "===== BEARER SARIF REPORT (START) ====="
+          cat bearer_report.sarif
+          echo "===== BEARER SARIF REPORT (END) ====="
