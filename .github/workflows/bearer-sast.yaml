@@ -11,14 +11,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download Bearer CLI (v1.37.2)
+      - name: Run Bearer via Docker and print SARIF
         run: |
-          curl -L -o bearer https://github.com/Bearer/bearer/releases/download/v1.37.2/bearer-linux-amd64
-          chmod +x bearer
-
-      - name: Run Bearer and print SARIF
-        run: |
-          ./bearer scan --format sarif --output bearer_report.sarif .
+          docker run --rm -v ${{ github.workspace }}:/app -w /app ghcr.io/bearer/bearer scan --format sarif --output bearer_report.sarif
           echo "===== BEARER SARIF REPORT (START) ====="
           cat bearer_report.sarif
           echo "===== BEARER SARIF REPORT (END) ====="
