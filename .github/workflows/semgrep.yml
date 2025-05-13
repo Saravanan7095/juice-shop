@@ -1,7 +1,7 @@
 name: Semgrep SAST Scan
 
 on:
-  workflow_dispatch:  # ✅ Allows manual run from the Actions tab
+  workflow_dispatch:  # ✅ Allows manual trigger
 
 jobs:
   semgrep:
@@ -25,7 +25,7 @@ jobs:
           semgrep --config=auto --json --output=semgrep_report.json || true
 
       - name: Upload Semgrep Report
-        uses: actions/upload-artifact@v3  # ✅ Use tag instead of exact version
+        uses: actions/upload-artifact@3e41b7a119b267cc0b2cbf53ce4706359e59c8c1
         with:
           name: semgrep-report
           path: semgrep_report.json
