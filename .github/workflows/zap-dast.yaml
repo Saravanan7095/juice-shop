@@ -1,4 +1,4 @@
-name: ZAP DAST Scan
+name: ZAP DAST Scan (working final)
 
 on:
   workflow_dispatch:
@@ -8,17 +8,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run ZAP DAST inside container and extract report
+      - name: Prepare writable directory
+        run: |
+          mkdir zap-data
+          chmod 777 zap-data
+
+      - name: Run ZAP scan in Docker and write report to mounted volume
         run: |
           echo "===== OWASP ZAP DAST REPORT (START) ====="
-
-          docker run --name zap_scan ghcr.io/zaproxy/zaproxy:stable \
+          docker run --rm \
+            -v ${{ github.workspace }}/zap-data:/zap/wrk \
+            ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t https://juice-shop-wo4s.onrender.com \
             -a -j -J /zap/wrk/zap_report.json || true
 
-          docker cp zap_scan:/zap/wrk/zap_report.json ./zap_report.json || echo "No report generated"
-          docker rm zap_scan > /dev/null
-
-          cat zap_report.json || echo "Report file missing"
-
+          cat zap-data/zap_report.json || echo "Report not found"
           echo "===== OWASP ZAP DAST REPORT (END) ====="
